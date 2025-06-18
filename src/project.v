@@ -7,7 +7,7 @@ module tt_um_equipo7 (
     output wire [7:0] uio_out,
     output wire [7:0] uio_oe,
     input  wire       clk,
-    input  wire       ena,
+    input  wire       ena, // Connected but unused (Tiny Tapeout requirement)
     input  wire       rst_n   // requerido por la plantilla Tiny Tapeout
 );
 
