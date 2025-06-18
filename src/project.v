@@ -6,9 +6,7 @@ module tt_um_equipo7 (
     input  wire [7:0] uio_in,
     output wire [7:0] uio_out,
     output wire [7:0] uio_oe,
-    input  wire       ena,
-    input  wire       clk,
-    input  wire       rst_n
+    input  wire       clk
 );
 
     wire tx_busy, tx_sn, rx_valid, rx_err;
@@ -23,7 +21,7 @@ module tt_um_equipo7 (
 
     reg have_data;
     reg [7:0] hold_rx_data;
-    wire rst = ~rst_n;
+    wire rst = ~ui_in[0];  // rst_n activo en bajo desde ui[0]
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -87,7 +85,7 @@ module uart_core (
   reg [2:0] ts, tr;
   reg [3:0] tcnt, tbit, pcnt;
   reg [7:0] tshift, rshift, rdata_reg;
-  reg       tpar, rxv, rerr;
+  reg       rxv, rerr;
 
   // TX FSM
   always @(posedge clk or posedge rst) begin
@@ -96,12 +94,10 @@ module uart_core (
       tshift <= 0;
       tcnt <= 0;
       tbit <= 0;
-      tpar <= 0;
     end else begin
       case (ts)
         T_IDLE: if (tx_req) begin
                   tshift <= tx_data;
-                  tpar <= cfg[3] ? (cfg[2] ? ^tx_data : ~^tx_data) : 1'b0;
                   ts <= cfg[3] ? T_P : T_S;
                   tcnt <= 0; tbit <= 0;
                 end
