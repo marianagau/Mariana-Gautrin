@@ -11,7 +11,7 @@ project:
   top_module:  "tt_um_equipo7"
 
   source_files:
-    - "project.v"          # Wrapper que conecta con ui/uo/uio
+    - "project.v"   # Aquí el nombre ya es correcto según lo que usas
 
 pinout:
   # Inputs
@@ -22,7 +22,7 @@ pinout:
   ui[4]: "cfg1"        # Config bit 1 (data_len[1])
   ui[5]: "cfg2"        # Config bit 2 (parity_even)
   ui[6]: "cfg3"        # Config bit 3 (parity_en)
-  ui[7]: "cfg4"        # Config bit 4 (stop_sel)
+  ui[7]: "rx_sn"       # RX serial input
 
   # Outputs
   uo[0]: "tx_sn"       # TX serial output
