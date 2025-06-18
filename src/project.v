@@ -85,7 +85,7 @@ module uart_core (
   localparam R_IDLE=0, R_CHK=1, R_REC=2, R_PAR=3, R_TST=4;
 
   reg [2:0] ts, tr;
-  reg [3:0] tcnt, tbit, pcnt;
+  reg [3:0] tcnt_tx, tcnt_rx, tbit, pcnt;
   reg [7:0] tshift, rshift, rdata_reg;
   reg       rxv, rerr;
 
@@ -94,35 +94,36 @@ module uart_core (
     if (rst) begin
       ts <= T_IDLE;
       tshift <= 0;
-      tcnt <= 0;
+      tcnt_tx <= 0;
       tbit <= 0;
     end else begin
       case (ts)
         T_IDLE: if (tx_req) begin
                   tshift <= tx_data;
                   ts <= cfg[3] ? T_P : T_S;
-                  tcnt <= 0; tbit <= 0;
+                  tcnt_tx <= 0; tbit <= 0;
                 end
+
         T_S: if (clk16)
-                if (tcnt == 15) begin tcnt <= 0; ts <= T_D; end
-                else tcnt <= tcnt + 1;
+                if (tcnt_tx == 15) begin tcnt_tx <= 0; ts <= T_D; end
+                else tcnt_tx <= tcnt_tx + 1;
 
         T_D: if (clk16)
-                if (tcnt == 15) begin
-                  tcnt <= 0;
+                if (tcnt_tx == 15) begin
+                  tcnt_tx <= 0;
                   tshift <= tshift >> 1;
                   tbit <= tbit + 1;
                   if (tbit == ({2'b00, cfg[1:0]} + 3)) ts <= T_T;
-                end else tcnt <= tcnt + 1;
+                end else tcnt_tx <= tcnt_tx + 1;
 
         T_P: if (clk16)
-                if (tcnt == 15) begin tcnt <= 0; ts <= T_T; end
-                else tcnt <= tcnt + 1;
+                if (tcnt_tx == 15) begin tcnt_tx <= 0; ts <= T_T; end
+                else tcnt_tx <= tcnt_tx + 1;
 
         T_T: if (clk16)
-                if (tcnt == (cfg[4] ? ({2'b00, cfg[1:0]} + 4) : ({2'b00, cfg[1:0]} + 2)))
+                if (tcnt_tx == (cfg[4] ? ({2'b00, cfg[1:0]} + 4) : ({2'b00, cfg[1:0]} + 2)))
                   ts <= T_IDLE;
-                else tcnt <= tcnt + 1;
+                else tcnt_tx <= tcnt_tx + 1;
       endcase
     end
   end
@@ -138,39 +139,39 @@ module uart_core (
       pcnt <= 0;
       rerr <= 0;
       rxv <= 0;
-      tcnt <= 0;
+      tcnt_rx <= 0;
     end else begin
       rxv <= 0;
       case (tr)
-        R_IDLE: if (!rx_sn) begin tr <= R_CHK; tcnt <= 7; end
+        R_IDLE: if (!rx_sn) begin tr <= R_CHK; tcnt_rx <= 7; end
 
         R_CHK: if (clk16)
-                 if (tcnt == 0) begin tcnt <= 0; tr <= R_REC; end
-                 else tcnt <= tcnt - 1;
+                 if (tcnt_rx == 0) begin tcnt_rx <= 0; tr <= R_REC; end
+                 else tcnt_rx <= tcnt_rx - 1;
 
         R_REC: if (clk16)
-                 if (tcnt == 15) begin
-                   tcnt <= 0;
+                 if (tcnt_rx == 15) begin
+                   tcnt_rx <= 0;
                    rshift <= {rx_sn, rshift[7:1]};
                    pcnt <= pcnt + 1;
                    if (pcnt == ({2'b00, cfg[1:0]} + 4))
                      tr <= cfg[3] ? R_PAR : R_TST;
-                 end else tcnt <= tcnt + 1;
+                 end else tcnt_rx <= tcnt_rx + 1;
 
         R_PAR: if (clk16)
-                 if (tcnt == 15) begin
-                   tcnt <= 0;
+                 if (tcnt_rx == 15) begin
+                   tcnt_rx <= 0;
                    if ((cfg[2] ? ^rshift : ~^rshift) != rx_sn)
                      rerr <= 1;
                    tr <= R_TST;
-                 end else tcnt <= tcnt + 1;
+                 end else tcnt_rx <= tcnt_rx + 1;
 
         R_TST: if (clk16)
-                 if (tcnt == 15) begin
+                 if (tcnt_rx == 15) begin
                    rdata_reg <= rshift;
                    rxv <= 1;
                    tr <= R_IDLE;
-                 end else tcnt <= tcnt + 1;
+                 end else tcnt_rx <= tcnt_rx + 1;
       endcase
     end
   end
