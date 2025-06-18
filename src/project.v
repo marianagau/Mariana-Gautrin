@@ -1,4 +1,5 @@
-%%writefile tt_um_equipo7.v
+`default_nettype none
+
 module tt_um_equipo7 (
     input        clk,
     input        rst,
