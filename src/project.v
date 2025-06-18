@@ -10,7 +10,7 @@ module tt_um_equipo7 (
     input  wire       ena,
     input  wire       rst_n   // requerido por la plantilla Tiny Tapeout
 );
-
+    wire rst = ~rst_n;
     wire tx_busy, tx_sn, rx_valid, rx_err;
     wire [7:0] rx_data;
 
