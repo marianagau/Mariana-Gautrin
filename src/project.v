@@ -8,7 +8,7 @@ module tt_um_equipo7 (
     output wire [7:0] uio_oe,
     input  wire       clk,
     input  wire       ena,
-    input  wire       rst_n 
+    input  wire       rst_n   // requerido por la plantilla Tiny Tapeout
 );
 
     wire tx_busy, tx_sn, rx_valid, rx_err;
@@ -23,7 +23,7 @@ module tt_um_equipo7 (
 
     reg have_data;
     reg [7:0] hold_rx_data;
-    wire rst = ~ui_in[0];  // rst_n activo en bajo desde ui[0]
+    wire rst = ~ui_in[0];  // reset activo en bajo
 
     always @(posedge clk or posedge rst) begin
         if (rst) begin
