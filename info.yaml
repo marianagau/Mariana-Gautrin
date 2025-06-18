@@ -15,7 +15,7 @@ project:
 
 pinout:
   # Inputs
-  ui[0]: "rst_n"       # Reset activo en bajo
+  ui[0]: ""       # Reset activo en bajo
   ui[1]: "tx_req"      # TX Start request
   ui[2]: "clk16"       # 16x baud rate clock
   ui[3]: "cfg0"        # Config bit 0 (data_len[0])
