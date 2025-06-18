@@ -12,7 +12,6 @@ project:
 
   source_files:
     - "project.v"          # Wrapper que conecta con ui/uo/uio
-    - "tt_um_equipo7.v"    # Tu módulo UART principal
 
 pinout:
   # Inputs
