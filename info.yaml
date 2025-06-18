@@ -11,7 +11,7 @@ project:
   top_module:  "tt_um_equipo7"
 
   source_files:
-    - "project.v"   # Aquí el nombre ya es correcto según lo que usas
+    - "project.v"
 
 pinout:
   # Inputs
@@ -27,21 +27,11 @@ pinout:
   # Outputs
   uo[0]: "tx_sn"       # TX serial output
   uo[1]: "tx_busy"     # TX busy flag
-  uo[2]: "rx_valid"    # RX valid
-  uo[3]: "rx_err"      # RX error
+  uo[2]: "have_data"   # Flag: se recibió dato
+  uo[3]: "rx_err"      # RX error flag
   uo[4]: ""            # Unused
   uo[5]: ""            # Unused
   uo[6]: ""            # Unused
   uo[7]: ""            # Unused
 
-  # Bidirectional pins (TX data input)
-  uio[0]: "tx_data0"
-  uio[1]: "tx_data1"
-  uio[2]: "tx_data2"
-  uio[3]: "tx_data3"
-  uio[4]: "tx_data4"
-  uio[5]: "tx_data5"
-  uio[6]: "tx_data6"
-  uio[7]: "tx_data7"
-
-yaml_version: 6
+  # Bidirectional pins (TX data input / RX data output)
