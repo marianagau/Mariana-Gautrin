@@ -1,9 +1,9 @@
-`default_nettype none
+default_nettype none
 
-module tt_um_equipo7 (
+module uart_core (
     input        clk,
     input        rst,
-    input  [4:0] cfg,        // {stop_sel, parity_en, parity_even, data_len[1:0]}
+    input  [4:0] cfg,
     input  [7:0] tx_data,
     input        tx_req,
     output       tx_busy,
@@ -12,8 +12,7 @@ module tt_um_equipo7 (
     output [7:0] rx_data,
     output       rx_valid,
     output       rx_err,
-    input        clk16,
-    input        ena
+    input        clk16
 );
 
   localparam T_IDLE=0, T_S=1, T_D=2, T_P=3, T_T=4;
@@ -125,5 +124,71 @@ module tt_um_equipo7 (
   assign rx_data  = rdata_reg;
   assign rx_valid = rxv;
   assign rx_err   = rerr;
+
+endmodule
+
+module tt_um_equipo7 (
+    input  wire [7:0] ui_in,    // Dedicated inputs
+    output wire [7:0] uo_out,   // Dedicated outputs
+    input  wire [7:0] uio_in,   // IOs: Input path
+    output wire [7:0] uio_out,  // IOs: Output path
+    output wire [7:0] uio_oe,   // IOs: Enable (1:output, 0:input)
+    input  wire       ena,      // Enable - high to run design
+    input  wire       clk,      // Clock
+    input  wire       rst_n     // Reset (active low)
+);
+
+    wire tx_busy, tx_sn, rx_valid, rx_err;
+    wire [7:0] rx_data;
+    wire [4:0] cfg = {
+        ui_in[7],       // CTRL4: stop_sel
+        ~ui_in[6],      // CTRL3: parity_en (invertido)
+        ui_in[5],       // CTRL2: parity_even
+        ui_in[4:3]      // CTRL1-0: data_len[1:0]
+    };
+    
+    reg have_data;
+    reg [7:0] hold_rx_data;
+    wire rst = ~rst_n;  // Convertir a reset activo-alto
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            have_data <= 0;
+            hold_rx_data <= 0;
+        end else begin
+            if (rx_valid) begin
+                have_data <= 1;
+                hold_rx_data <= rx_data;
+            end else if (ui_in[1]) begin  // TX_START
+                have_data <= 0;
+            end
+        end
+    end
+
+    uart_core core_inst (
+        .clk(clk),
+        .rst(rst),
+        .cfg(cfg),
+        .tx_data(uio_in),
+        .tx_req(ui_in[1]),   // TX_START
+        .tx_busy(tx_busy),
+        .tx_sn(tx_sn),
+        .rx_sn(ui_in[0]),    // RX_IN
+        .rx_data(rx_data),
+        .rx_valid(rx_valid),
+        .rx_err(rx_err),
+        .clk16(ui_in[2])     // BAUD_EN
+    );
+
+    // Mapeo de salidas
+    assign uo_out[0] = tx_sn;        // TX_OUT
+    assign uo_out[1] = tx_busy;      // TX_BUSY
+    assign uo_out[2] = rx_valid;     // RX_READY
+    assign uo_out[3] = rx_err;       // RX_ERROR
+    assign uo_out[7:4] = 4'b0;       // Unused
+
+    // Control bus bidireccional
+    assign uio_out = hold_rx_data;
+    assign uio_oe = have_data ? 8'hFF : 8'h00;
 
 endmodule
