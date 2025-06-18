@@ -13,6 +13,7 @@ module tt_um_equipo7 (
     output       rx_valid,
     output       rx_err,
     input        clk16
+    input wire    ena,
 );
 
   localparam T_IDLE=0, T_S=1, T_D=2, T_P=3, T_T=4;
