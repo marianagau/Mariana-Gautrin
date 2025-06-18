@@ -7,7 +7,8 @@ module tt_um_equipo7 (
     output wire [7:0] uio_out,
     output wire [7:0] uio_oe,
     input  wire       clk,
-    input  wire       ena 
+    input  wire       ena,
+    input  wire       rst_n 
 );
 
     wire tx_busy, tx_sn, rx_valid, rx_err;
