@@ -1,56 +1,47 @@
 # Tiny Tapeout project information
 project: 
-  title:        "Evidencia 2 Código Verilog"      # Project title
-  author:       "Mariana Gautrin, Arah Rojas, Olín"      # Your name
-  discord:      "NA"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "Simulación 3D"      # One line description of what your project does
-  language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
-  clock_hz:     0       # Clock frequency in Hz (or 0 if not applicable)
+  title:        "Evidencia 2 Código Verilog"
+  author:       "Mariana Gautrin, Arah Rojas, Olín"
+  discord:      "NA"
+  description:  "Simulación 3D"
+  language:     "Verilog"
+  clock_hz:     0
 
-  # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
-
-  # Your top module name must start with "tt_um_". Make it unique by including your github username:
+  tiles: "1x1"
   top_module:  "tt_um_equipo7"
 
-  # List your project's source files here.
-  # Source files must be in ./src and you must list each source file separately, one per line.
-  # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
     - "project.v"
 
-# The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
-# This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: "RX_IN"    # Serial input
-  ui[1]: "TX_START" # Transmission start signal
-  ui[2]: "BAUD_EN"  # 16x baud rate enable
-  ui[3]: "CTRL0"    # Data bits config LSB
-  ui[4]: "CTRL1"    # Data bits config
-  ui[5]: "CTRL2"    # Parity type (0=Odd, 1=Even)
-  ui[6]: "CTRL3"    # Parity enable (0=Enabled)
-  ui[7]: "CTRL4"    # Stop bits (0=1bit, 1=2bits)
+  ui[0]: "rst"       # Reset
+  ui[1]: "tx_req"    # TX Start request
+  ui[2]: "clk16"     # 16x baud rate clock
+  ui[3]: "cfg0"      # Config bit 0 (data_len[0])
+  ui[4]: "cfg1"      # Config bit 1 (data_len[1])
+  ui[5]: "cfg2"      # Config bit 2 (parity_even)
+  ui[6]: "cfg3"      # Config bit 3 (parity_en)
+  ui[7]: "cfg4"      # Config bit 4 (stop_sel)
 
   # Outputs
-  uo[0]: "TX_OUT"   # Serial output
-  uo[1]: "TX_BUSY"  # Transmitter busy
-  uo[2]: "RX_READY" # Data received ready
-  uo[3]: "RX_ERROR" # Error indicator
-  uo[4]: ""         # Unused
-  uo[5]: ""         # Unused
-  uo[6]: ""         # Unused
-  uo[7]: ""         # Unused
+  uo[0]: "tx_sn"     # TX serial output
+  uo[1]: "tx_busy"   # TX busy flag
+  uo[2]: "rx_valid"  # RX valid
+  uo[3]: "rx_err"    # RX error
+  uo[4]: ""          # Unused
+  uo[5]: ""          # Unused
+  uo[6]: ""          # Unused
+  uo[7]: ""          # Unused
 
-  # Bidirectional pins
-  uio[0]: "DATA0"   # Data bit 0 (input only)
-  uio[1]: "DATA1"   # Data bit 1
-  uio[2]: "DATA2"   # Data bit 2
-  uio[3]: "DATA3"   # Data bit 3
-  uio[4]: "DATA4"   # Data bit 4
-  uio[5]: "DATA5"   # Data bit 5
-  uio[6]: "DATA6"   # Data bit 6
-  uio[7]: "DATA7"   # Data bit 7
+  # Bidirectional pins (used for TX/RX data exchange)
+  uio[0]: "tx_data0" # TX data bit 0
+  uio[1]: "tx_data1" # TX data bit 1
+  uio[2]: "tx_data2" # TX data bit 2
+  uio[3]: "tx_data3" # TX data bit 3
+  uio[4]: "tx_data4" # TX data bit 4
+  uio[5]: "tx_data5" # TX data bit 5
+  uio[6]: "tx_data6" # TX data bit 6
+  uio[7]: "tx_data7" # TX data bit 7
 
-# Do not change!
 yaml_version: 6
