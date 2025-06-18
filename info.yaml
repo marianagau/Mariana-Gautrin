@@ -12,7 +12,7 @@ project:
 
   source_files:
     - "project.v"
-  user_config: "user_config.tcl"   # 👈 Esta línea fue añadida para evitar errores de capas
+  user_config: "user_config.tcl"
 
 pinout:
   # Inputs
