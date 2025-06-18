@@ -35,3 +35,13 @@ pinout:
   uo[7]: ""            # Unused
 
   # Bidirectional pins (TX data input / RX data output)
+  uio[0]: "data0"
+  uio[1]: "data1"
+  uio[2]: "data2"
+  uio[3]: "data3"
+  uio[4]: "data4"
+  uio[5]: "data5"
+  uio[6]: "data6"
+  uio[7]: "data7"
+
+yaml_version: 6
